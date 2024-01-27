@@ -3,6 +3,7 @@ package com.allasassis.springbootkafka.kafka;
 import com.allasassis.springbootkafka.payload.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
@@ -20,9 +21,12 @@ public class JsonKafkaProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+    @Value("${spring.kafka.retry.topic-json.name}")
+    private String topicName;
+
     public void sendMessage(User data) {
         LOGGER.info(String.format("Message sent -> %s", data));
-        Message<User> message = MessageBuilder.withPayload(data).setHeader(KafkaHeaders.TOPIC, "firstKafka_json").build();
+        Message<User> message = MessageBuilder.withPayload(data).setHeader(KafkaHeaders.TOPIC, topicName).build();
         kafkaTemplate.send(message);
     }
 }
